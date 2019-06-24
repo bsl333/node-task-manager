@@ -30,8 +30,9 @@ router.get('/:id', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
+  const updates = Object.keys(req.body);
   const propsAllowed = Task.schema.obj;
-  const invalidBodyParameters = Object.keys(req.body).filter(prop => !propsAllowed[prop]);
+  const invalidBodyParameters = updates.filter(prop => !propsAllowed[prop]);
   if (invalidBodyParameters.length) {
     const error = {
       errorMessage: 'Invalid Updates',
@@ -41,8 +42,14 @@ router.patch('/:id', async (req, res) => {
   }
 
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    task ? res.status(202).send(task) : res.status(404).send('task not found');
+    const task = await Task.findById(req.params.id);
+    if (task) {
+      updates.forEach(prop => task[prop] = req.body[prop]);
+      await task.save();
+      return res.status(202).send(task);
+    }
+
+    res.status(404).send('task not found');
   } catch (e) {
     res.status(500).send('Server Error')
   }

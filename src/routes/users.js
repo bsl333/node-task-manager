@@ -32,18 +32,26 @@ router.get('/:id', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
+  const updates = Object.keys(req.body);
   const allowedUpdates = ['email', 'age', 'name', 'password'];
-  const isValidRequest = Object.keys(req.body).every(prop => allowedUpdates.includes(prop));
+  const invalidBodyParameters = updates.filter(prop => !allowedUpdates.includes(prop));
   // console.log(User.schema)
 
-  if (!isValidRequest) {
-    const error = { message: 'invalid reqest', propsReceived: req.body, propsAllowed: allowedUpdates }
-    return res.status(400).send(error);
+  if (invalidBodyParameters.length) {
+    const error = { message: 'invalid reqest', invalidBodyParameters }
+    return res.status(400).send({ error });
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    user ? res.status(202).send(user) : res.status(404).send('User not found');
+    // use this approach to ensure validators are run and pre save middleware runs.
+    const user = await User.findById(req.params.id);
+    if (user) {
+      updates.forEach(prop => user[prop] = req.body[prop]);
+      await user.save();
+      return res.status(202).send(user);
+    };
+
+    res.status(404).send('User not found');
   } catch (e) {
     res.status(400).send(e);
   }
