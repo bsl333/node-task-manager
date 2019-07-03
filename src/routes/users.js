@@ -9,7 +9,7 @@ router.post('/login', async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (e) {
-    res.status(401).send(e);
+    res.status(401).send(e).message;
   }
 
 });
