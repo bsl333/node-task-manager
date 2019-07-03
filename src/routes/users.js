@@ -20,7 +20,7 @@ router.post('/logout', auth, async (req, res, next) => {
     await req.user.save();
     res.send();
   } catch (e) {
-    next({status: 500, error: 'Internal Server error'});
+    next({ status: 500, error: 'Internal Server error' });
   }
 });
 
@@ -30,9 +30,9 @@ router.post('/logoutAll', auth, async (req, res) => {
     await req.user.save();
     res.send();
   } catch (e) {
-    next({status: 500, error: 'Internal Server error'});
+    next({ status: 500, error: 'Internal Server error' });
   }
-})
+});
 
 
 
@@ -48,23 +48,23 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/me', auth, async (req, res) => {
-  res.send(req.user)
+  res.send({ user: req.user })
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    user ? res.send(user) : res.status(404).send('User not found');
-  } catch (e) {
-    res.status(500).send('Server error');
-  }
-});
+// no longer needed
+// router.get('/:id', async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     user ? res.send(user) : res.status(404).send('User not found');
+//   } catch (e) {
+//     res.status(500).send('Server error');
+//   }
+// });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/me', auth, async (req, res, next) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['email', 'age', 'name', 'password'];
   const invalidBodyParameters = updates.filter(prop => !allowedUpdates.includes(prop));
-  // console.log(User.schema)
 
   if (invalidBodyParameters.length) {
     const error = { message: 'invalid reqest', invalidBodyParameters }
@@ -73,26 +73,21 @@ router.patch('/:id', async (req, res) => {
 
   try {
     // use this approach to ensure validators are run and pre save middleware runs.
-    const user = await User.findById(req.params.id);
-    if (user) {
-      updates.forEach(prop => user[prop] = req.body[prop]);
-      await user.save();
-      return res.status(202).send(user);
-    };
-
-    res.status(404).send('User not found');
+    updates.forEach(prop => req.user[prop] = req.body[prop]);
+    await req.user.save();
+    return res.status(202).send(req.user);
   } catch (e) {
-    res.status(400).send(e);
+    next({ status: 500, error: 'Internal Server error' });
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/me', auth, async (req, res, next) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    user ? res.status(204).send() : res.status(404).send('user not found');
+    await req.user.remove();
+    res.status(204).send();
   } catch (e) {
-    res.status(500).send('Server Error');
+    next({ status: 500, error: 'Internal Server error' });
   }
-})
+});
 
 module.exports = router;
