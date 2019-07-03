@@ -1,25 +1,32 @@
 const router = require('express').Router({ mergeParams: true });
 const User = require('../models/user');
+const auth = require('../middleware/auth');
 
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findByCredentials(email, password);
+    const token = await user.generateAuthToken();
+    res.send({ user, token });
+  } catch (e) {
+    res.status(401).send(e);
+  }
+
+});
 
 router.post('/', async (req, res) => {
-  const user = new User(req.body);
-
   try {
+    const user = new User(req.body);
+    const token = await user.generateAuthToken();
     await user.save();
-    res.send(user);
+    res.status(201).send({ user, token });
   } catch (e) {
     res.status(400).send('Error: could not create user');
   }
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (e) {
-    res.status(500).send('Server error');
-  }
+router.get('/me', auth, async (req, res) => {
+  res.send(req.user)
 });
 
 router.get('/:id', async (req, res) => {
