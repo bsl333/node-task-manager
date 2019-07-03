@@ -14,6 +14,28 @@ router.post('/login', async (req, res) => {
 
 });
 
+router.post('/logout', auth, async (req, res, next) => {
+  try {
+    req.user.tokens = req.user.tokens.filter(token => token.token !== req.token);
+    await req.user.save();
+    res.send();
+  } catch (e) {
+    next({status: 500, error: 'Internal Server error'});
+  }
+});
+
+router.post('/logoutAll', auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+    res.send();
+  } catch (e) {
+    next({status: 500, error: 'Internal Server error'});
+  }
+})
+
+
+
 router.post('/', async (req, res) => {
   try {
     const user = new User(req.body);
