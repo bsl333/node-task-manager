@@ -15,14 +15,45 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// query params
+//  - completed: boolean
+//  - limit: number of elements to send back
+//  - skip: starting point
+//  - sortBy: fieldName:asc|desc
 router.get('/', auth, async (req, res) => {
+  const {
+    completed,
+    limit,
+    skip,
+    sortBy
+  } = req.query;
+
+  const match = {};
+  if (completed === 'true' || completed === 'false') {
+    match.completed = completed === 'true';
+  }
+
+  const sort = {};
+  if (sortBy) {
+    const [field, order] = sortBy.split(':');
+    sort[field] = order === 'asc' ? 1 : -1;
+  }
   try {
     // option 1
-    const tasks = await Task.find({ ownerId: req.user._id });
-    res.send(tasks);
+
+    // const tasks = await Task.find({ ownerId: req.user._id, ...match });
+    // res.send(tasks.slice(+skip, +skip + +limit));
     //option 2:
-    // await req.user.populate('userTasks').execPopulate();
-    // res.send(req.user.userTasks);
+    await req.user.populate({
+      path: 'userTasks',
+      match,
+      options: {
+        limit: +limit,
+        skip: +skip,
+        sort
+      }
+    }).execPopulate();
+    res.send(req.user.userTasks);
   } catch (e) {
     res.status(500).send('Server Error');
   }
