@@ -1,8 +1,7 @@
 const express = require('express');
-require('./db/mongoose')
+require('./db/mongoose');
 const userRouter = require('./routes/users');
 const taskRouter = require('./routes/tasks');
-const auth = require('./middleware/auth');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -22,9 +21,7 @@ app.use((req, res, next) => {
 });
 // default error messaging
 app.use((err, req, res, next) => {
-  console.log(err)
   const { status = 500, message = 'Internal Server Error' } = err;
-  console.log(status, message)
   res.status(status).send({ error: message });
 })
 
