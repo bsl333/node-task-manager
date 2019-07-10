@@ -1,5 +1,5 @@
 # Node Task Manager
- Run `npm i` to install dependencies
+ Run `npm i` to install dependencies\
  To start Application, run `npm start`
 
  ### Development
