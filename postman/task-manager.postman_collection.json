@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "c8096b14-842e-4513-96ae-e510edbb239d",
+		"name": "task-manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9efb17ad-4b09-4891-8690-a12b3bd2bb50",
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"test user\",\n\t\"email\": \"b.lowe@testUser.com\",\n\t\"age\": 50,\n\t\"password\": \"1234567\"\n} "
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one user (EOL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7d90767-9296-4a51-9118-1c6ab5230599",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/5d1c1f73d8c892b3f5a96d4b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"5d1c1f73d8c892b3f5a96d4b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update single user",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"agea\": 75,\n\t\"name\": \"Branden\",\n\t\"password\": \"1234567\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "66d722d0-2fbb-4f7b-bef6-c9699f88e02a",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"test@testUser.com\",\n\t\"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						},
+						"description": "email: test@testUser.com\npassword: 1234567\n"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						},
+						"description": "logout a user - remove one token"
+					},
+					"response": []
+				},
+				{
+					"name": "logout all active sessions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/logoutAll",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"logoutAll"
+							]
+						},
+						"description": "remove all active tokens a user currently has"
+					},
+					"response": []
+				},
+				{
+					"name": "upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/bsl333/Downloads/tek-2.0-lt-combo-01_web-template (1).jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/me/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"upload"
+							]
+						},
+						"description": "Upload a user image\n"
+					},
+					"response": []
+				},
+				{
+					"name": "delete image",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/bsl333/Downloads/big-O-cheat-sheet.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/me/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"upload"
+							]
+						},
+						"description": "Upload a user image\n"
+					},
+					"response": []
+				},
+				{
+					"name": "get user avatar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/5d1d407f592e2ed13404182d/avatar",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"5d1d407f592e2ed13404182d",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Requests associated with users",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{authToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4900fee5-828a-452b-a681-845fcff82297",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee61ad96-7ce8-435c-9559-f544781c5a69",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"item": [
+				{
+					"name": "Create task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"Fourth\",\n\t\"completed\": false\n}"
+						},
+						"url": {
+							"raw": "{{url}}/tasks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f69208d2-a27d-4fe6-a807-894a32cb5f8d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasks?sortBy=completed:asc",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "completed:asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one task",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasks/5d1c4526de07c2bff318b7a1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasks",
+								"5d1c4526de07c2bff318b7a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update one task",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\" : \"task10000\",\n\t\"completed\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/tasks/5d1c495bb05105c1d3657401",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasks",
+								"5d1c495bb05105c1d3657401"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasks/5d1c467e5f8b22c0860577d8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasks",
+								"5d1c467e5f8b22c0860577d8"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "requests for tasks",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{authToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "517dc7b3-1828-402f-92da-0b971769b8f2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c98107f0-5458-4f11-a0b7-ba0081a23317",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Ping server",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "87186596-381f-450a-988a-00aa15112533",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5b1d7599-d548-4410-bb9d-f2b443bc5516",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ff63ca7f-a88f-48d4-a07c-19ef1338ea86",
+			"key": "url",
+			"value": "localhost:3000",
+			"type": "string"
+		}
+	]
+}

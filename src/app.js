@@ -3,11 +3,15 @@ require('./db/mongoose');
 const userRouter = require('./routes/users');
 const taskRouter = require('./routes/tasks');
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 !process.env.TEST_ENV && app.use(require('morgan')('dev'));
 app.use(require('body-parser').json());
+
+app.get('/', (req, res) => {
+  res.send({ message: 'Welcome to the Task manager App' })
+})
 
 app.use('/users', userRouter);
 app.use('/tasks', taskRouter);
