@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "env-cmd -f config/dev.env nodemon src/app.js",
+    "test": "env-cmd -f config/test.env jest --watch"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true
   },
   "keywords": [],
   "author": "",
@@ -21,6 +26,9 @@
     "validator": "^11.0.0"
   },
   "devDependencies": {
-    "morgan": "^1.9.1"
+    "env-cmd": "^9.0.3",
+    "jest": "^24.8.0",
+    "morgan": "^1.9.1",
+    "supertest": "^4.0.2"
   }
 }

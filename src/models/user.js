@@ -62,7 +62,7 @@ userSchema.virtual('userTasks', {
 });
 
 userSchema.methods.generateAuthToken = async function () {
-  const token = jwt.sign({ _id: this._id.toString() }, 'mongodbcourse', { expiresIn: "1 y" });
+  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET, { expiresIn: "1 y" });
   this.tokens.push({ token });
   await this.save();
   return token;
@@ -72,6 +72,7 @@ userSchema.methods.toJSON = function () {
   const userObj = this.toObject();
   delete userObj.tokens;
   delete userObj.password;
+  delete userObj.avatar
   return userObj;
 };
 

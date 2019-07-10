@@ -1,5 +1,6 @@
 const router = require('express').Router({ mergeParams: true });
 const multer = require('multer');
+// const sharp = require('sharp')     *** Install this lib ***
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 
@@ -61,6 +62,8 @@ router.post('/', async (req, res, next) => {
 
 router.post('/me/upload', auth, upload.single('avatar'), async (req, res) => {
   try {
+    // const buffer = sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer();
+    // set below line to just buffer
     req.user.avatar = req.file.buffer;
     await req.user.save();
     res.send();
@@ -82,6 +85,7 @@ router.delete('/me/upload', auth, async (req, res) => {
 router.get('/:id/avatar', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    // TODO update to image/png
     res.set('Content-Type', 'image/jpg');
     res.send(user.avatar);
   } catch (e) {
