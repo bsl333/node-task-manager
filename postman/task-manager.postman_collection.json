@@ -519,7 +519,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{url}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						""
+					]
 				}
 			},
 			"response": []
@@ -549,7 +555,7 @@
 	],
 	"variable": [
 		{
-			"id": "ff63ca7f-a88f-48d4-a07c-19ef1338ea86",
+			"id": "ae53469b-4fb4-4afb-aa7b-2183f0d30594",
 			"key": "url",
 			"value": "localhost:3000",
 			"type": "string"
